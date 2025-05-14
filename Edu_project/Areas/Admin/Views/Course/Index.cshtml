@@ -1,0 +1,30 @@
+﻿@model IEnumerable<EdukateMvc.Models.Course>
+@{
+    ViewData["Title"] = "Управление курсами";
+}
+<h1>@ViewData["Title"]</h1>
+<p><a asp-action="Create" class="btn btn-primary">Добавить курс</a></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Цена</th>
+            <th>Дата создания</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model)
+    {
+        <tr>
+            <td>@course.Title</td>
+            <td>@course.Price.ToString("C")</td>
+            <td>@course.CreatedAt.ToString("yyyy-MM-dd")</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@course.Id">Ред.</a> |
+                <a asp-action="Delete" asp-route-id="@course.Id">Уд.</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
