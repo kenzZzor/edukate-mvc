@@ -1,4 +1,4 @@
-﻿using EdukateMvc.Data;
+using EdukateMvc.Data;
 using EdukateMvc.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -16,12 +16,6 @@ namespace EdukateMvc.Repositories
 
         public async Task<Course?> GetByIdAsync(int id) =>
             await _ctx.Courses.FindAsync(id);
-
-        public async Task CreateAsync(Course c)
-        {
-            _ctx.Courses.Add(c);
-            await _ctx.SaveChangesAsync();
-        }
 
         public async Task AddAsync(Course course)
         {
