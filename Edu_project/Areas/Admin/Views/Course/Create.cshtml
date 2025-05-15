@@ -10,7 +10,6 @@
     <form asp-area="Admin" asp-controller="Course" asp-action="Create" method="post">
         @Html.AntiForgeryToken()
 
-
         <div class="mb-3">
             <label asp-for="Title" class="form-label"></label>
             <input asp-for="Title" class="form-control" />
@@ -29,15 +28,20 @@
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
 
+        <div class="mb-3">
+            <label asp-for="InstructorName" class="form-label"></label>
+            <input asp-for="InstructorName" class="form-control" />
+            <span asp-validation-for="InstructorName" class="text-danger"></span>
+        </div>
+
         <button type="submit" class="btn btn-success">Сохранить</button>
         <a asp-area="Admin"
            asp-controller="Course"
            asp-action="Index"
            class="btn btn-danger ms-2">Отмена</a>
     </form>
-
-
 </div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
