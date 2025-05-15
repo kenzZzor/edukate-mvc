@@ -28,50 +28,62 @@
 
                 <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto py-0">
-                        <!-- ваши пункты меню -->
+
+                        <a asp-controller="Home" asp-action="About" class="nav-item nav-link">About</a>
+
+                        <a asp-controller="Home" asp-action="Courses" class="nav-item nav-link" >Courses</a>
+                       
+
+                        <a asp-controller="Home" asp-action="Privacy" class="nav-item nav-link">Privacy</a>
                     </div>
 
-                    @* Вот так: если залогинен *@
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        @* Если админ — показываем ссылку на админ-панель *@
-                        @if (User.IsInRole("Admin"))
+                    <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto py-0">
+                            <!-- ваши пункты меню -->
+                        </div>
+
+                        @* Вот так: если залогинен *@
+                        @if (User.Identity?.IsAuthenticated ?? false)
                         {
-                            <a asp-area="Admin"
-                               asp-controller="Course"
-                               asp-action="Index"
-                               class="btn btn-outline-primary py-2 px-4 me-2">
-                                Admin Panel
+                            @* Если админ — показываем ссылку на админ-панель *@
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-area="Admin"
+                                   asp-controller="Course"
+                                   asp-action="Index"
+                                   class="btn btn-outline-primary py-2 px-4 me-2">
+                                    Admin Panel
+                                </a>
+                            }
+
+                            @* И в любом случае — кнопку Выход *@
+                            <form asp-controller="Account"
+                                  asp-action="Logout"
+                                  method="post"
+                                  class="d-inline">
+                                <button type="submit"
+                                        class="btn btn-link nav-item nav-link">
+                                    Logout
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            @* Анонимы видят Вход и Регистрацию *@
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="btn btn-link nav-item nav-link me-2">
+                                Login
+                            </a>
+                            <a asp-controller="Account"
+                               asp-action="Register"
+                               class="btn btn-primary py-2 px-4 d-none d-lg-block">
+                                Register
                             </a>
                         }
+                    </div>
 
-                        @* И в любом случае — кнопку Выход *@
-                        <form asp-controller="Account"
-                              asp-action="Logout"
-                              method="post"
-                              class="d-inline">
-                            <button type="submit"
-                                    class="btn btn-link nav-item nav-link">
-                                Logout
-                            </button>
-                        </form>
-                    }
-                    else
-                    {
-                        @* Анонимы видят Вход и Регистрацию *@
-                        <a asp-controller="Account"
-                           asp-action="Login"
-                           class="btn btn-link nav-item nav-link me-2">
-                            Login
-                        </a>
-                        <a asp-controller="Account"
-                           asp-action="Register"
-                           class="btn btn-primary py-2 px-4 d-none d-lg-block">
-                            Register
-                        </a>
-                    }
                 </div>
-
     </header>
 
 
@@ -84,7 +96,7 @@
     </main>
 
     <!-- Ваш footer -->
-    <footer class="bg-dark text-white py-4">
+    <footer">
         <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
             <div class="container mt-5 pt-5">
                 <div class="row">

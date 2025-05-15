@@ -73,6 +73,8 @@ namespace EdukateMvc.Controllers
         }
 
 
+        public IActionResult Privacy() => View();
+
     }
 }
 

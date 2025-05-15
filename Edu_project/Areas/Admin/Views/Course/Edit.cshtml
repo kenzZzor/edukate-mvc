@@ -4,34 +4,37 @@
     Layout = "_Layout";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container" style="max-width: 1000px;">
+    <h1>@ViewData["Title"]</h1>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
 
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label">Название</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Название</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label">Описание</label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Описание</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label">Цена</label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">Цена</label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
 
-    <!-- Если есть другие свойства, например ImageUrl, InstructorName и т.д., добавьте их аналогично -->
+        <!-- Если есть другие свойства, например ImageUrl, InstructorName и т.д., добавьте их аналогично -->
 
-    <button type="submit" class="btn btn-primary">Обновить</button>
-    <a asp-action="Index" class="btn btn-secondary">Отмена</a>
-</form>
+        <button type="submit" class="btn btn-primary">Обновить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
