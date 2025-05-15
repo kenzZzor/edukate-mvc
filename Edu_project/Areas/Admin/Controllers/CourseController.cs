@@ -1,12 +1,9 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using ClosedXML.Excel;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using EdukateMvc.Models;
 using EdukateMvc.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace EdukateMvc.Areas.Admin.Controllers
 {
@@ -14,29 +11,35 @@ namespace EdukateMvc.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class CourseController : Controller
     {
-        private readonly ICourseService _courseService;
-        private readonly ILogger<CourseController> _logger;
+        private readonly ICourseService _srv;
+        private readonly ILogger<CourseController> _log;
 
-        public CourseController(ICourseService courseService,
-                                ILogger<CourseController> logger)
+        public CourseController(ICourseService srv,
+                                ILogger<CourseController> log)
         {
-            _courseService = courseService;
-            _logger = logger;
+            _srv = srv;
+            _log = log;
+        }
+
+        // =====  Список курсов  =====
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var courses = await _srv.GetAllAsync();
+            return View(courses);
         }
 
         // =====  Экспорт в Excel  =====
         [HttpGet]
         public async Task<FileResult> ExportExcel()
         {
-            var courses = await _courseService.GetAllAsync();
+            var courses = await _srv.GetAllAsync();
 
-            using var wb = new XLWorkbook();
+            using var wb = new ClosedXML.Excel.XLWorkbook();
             var ws = wb.Worksheets.Add("Courses");
-
-            // быстрый способ залить коллекцию целиком
             ws.Cell(1, 1).InsertTable(courses);
 
-            using var ms = new MemoryStream();
+            using var ms = new System.IO.MemoryStream();
             wb.SaveAs(ms);
             ms.Position = 0;
 
@@ -45,42 +48,23 @@ namespace EdukateMvc.Areas.Admin.Controllers
                         "courses.xlsx");
         }
 
+        // =====  Create =====
+        public IActionResult Create() => View(new Course());
 
-
-
-        private readonly ICourseService _srv;
-        private readonly ILogger<CourseController> _log;
-
-
-
-        public async Task<IActionResult> Index() =>
-            View(await _srv.GetAllAsync());
-
-        public IActionResult Create() =>
-            View(new Course());
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Course course)
         {
-            if (!ModelState.IsValid)
-            {
-                // Логируем ошибки и возвращаем ту же форму
-                foreach (var kv in ModelState.Where(x => x.Value.Errors.Any()))
-                    _log.LogWarning("Validation error on {Field}: {Error}",
-                        kv.Key, kv.Value.Errors.First().ErrorMessage);
+            if (!ModelState.IsValid) return View(course);
 
-                return View(course);
-            }
-
-            // Обязательные поля, отсутствующие в форме
-            course.CreatedAt = DateTime.UtcNow;
+            course.CreatedAt = System.DateTime.UtcNow;
             course.Rating = 0;
 
-            await _srv.CreateAsync(course);   // сервис сам добавит и сохранит
+            await _srv.CreateAsync(course);
             return RedirectToAction(nameof(Index));
         }
 
+        // =====  Edit =====
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var item = await _srv.GetByIdAsync(id);
@@ -88,8 +72,7 @@ namespace EdukateMvc.Areas.Admin.Controllers
             return View(item);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Course m)
         {
             if (!ModelState.IsValid) return View(m);
@@ -97,6 +80,8 @@ namespace EdukateMvc.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // =====  Delete =====
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var item = await _srv.GetByIdAsync(id);
@@ -104,8 +89,7 @@ namespace EdukateMvc.Areas.Admin.Controllers
             return View(item);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _srv.DeleteAsync(id);
